@@ -1,35 +1,67 @@
 # Proyecto Login con Docker
 
 ## Descripción
-Esto es un login básico hecho para practicar Docker. La app tiene 3 partes:
-- **Frontend:** HTML + JS con un formulario.
-- **Backend:** API en Node.js con Express que valida login.
-- **Base de datos:** PostgreSQL con una tabla `users`.
+La idea fue armar una app de login (frontend + backend + base de datos) y correr todo con contenedores.  
 
-Cuando mando usuario y contraseña desde el front, el backend chequea en la base de datos si existe y me responde "Login exitoso" o "Usuario o contraseña inválidos".
+### 1. Construir las imágenes
 
-## Cómo está armado
-- Carpeta `frontend/` → index.html y app.js (se sirve con Nginx).
-- Carpeta `backend/` → server.js, db.js y package.json (API en Node).
-- Carpeta `db-init/` → init.sql para crear tabla y usuarios de prueba.
+No hace falta que vos armes cada imagen a mano, porque todo está definido en `docker-compose.yml`.  
+El comando que usamos es:
 
-## Usuarios de prueba
-- admin / 1234
-- test / qwerty
-
-## Próximos pasos
-Más adelante esto va a correr todo junto con Docker Compose, con dos entornos: QA y PROD, cada uno con su propia base de datos.
-
-# Proyecto Login con Docker
-
-## Etapa 2 – Containerizar componentes
-
-### Imágenes
-- **backend-login** → Node.js con Express, puerto 3000.
-- **frontend-login** → Nginx sirviendo index.html y app.js, puerto 80.
-
-### Cómo construir las imágenes
-Desde la raíz del proyecto:
 ```bash
-docker build -t backend-login ./backend
-docker build -t frontend-login ./frontend
+docker-compose up --build
+```
+
+En caso de querer apagarlos :
+
+```bash
+docker-compose down
+```
+
+En nuestro caso, utilizamos mucho el docker desktop que es mucho mas visual y amigable.
+
+### 2. Construir las imágenes
+
+Para acceder a los diferentes URLS y puertos lo detalle de la siguiente manera :
+
+•	Frontend (formulario login):
+ http://localhost:8080
+•	Backend QA:
+ http://localhost:3000/login
+•	Backend PROD:
+http://localhost:3001/login
+
+El frontend está apuntado por defecto al backend de QA, que en caso de querer ca,biarlo deberiamos acceder al apps.js donde se maneja la logica del front con el back y alli modificarlo 
+
+
+### 3. Conectarse a las bases de datos 
+
+Como menciona la consigna ambos entornos (QA Y PROD) manejan sus propias bases de datos y kes asigne en el docker compose :
+
+	•	DB QA
+		Host: localhost
+		Puerto: 5432
+		Usuario: postgres
+		Password: postgres
+		DB: postgres
+
+	•	DB PROD
+		Host: localhost
+		Puerto: 5433
+		Usuario: postgres
+		Password: postgres
+		DB: postgres
+
+Esta parte tambien probe si en el caso de las contrasenas y usuarios funcionaba cada uno para qa y prod para verificar que funcionaba por lo que accedi a ambas bases y le agregue un usuario diferente a qa y despues me fije en prod si aparecia.utilice los siguientes comandos: 
+
+```bash
+docker exec -it db-qa psql -U postgres -d postgres -c "SELECT * FROM users;"
+```
+
+```bash
+docker exec -it db-prod psql -U postgres -d postgres -c "SELECT * FROM users;"
+```
+
+### 4. Verificaciones 
+
+en esta espata me dedique a verificar si cuando levanataba los contendores con sus respectivas bases diferentes de qa y prod y iniciaba la pagina web me dejaba ingresar con un usuario registrado en QA y no en prod y si me dejo. Despues intente hacer lo mismo en PROD con dicho usario y no me dejaba, devolviendome error.
