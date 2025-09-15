@@ -1,0 +1,73 @@
+version: "3.9"
+
+services:
+  frontend:
+    build: ./frontend
+    container_name: frontend
+    ports:
+      - "8080:80" # Navegador apunta a http://localhost:8080
+    depends_on:
+      - backend-qa
+      - backend-prod
+
+  backend-qa:
+    build: ./backend
+    container_name: backend-qa
+    environment:
+      - DB_HOST=db-qa
+      - DB_PORT=5432
+      - DB_USER=postgres
+      - DB_PASS=postgres
+      - DB_NAME=postgres
+      - ENVIRONMENT=QA
+    ports:
+      - "3000:3000" # QA backend accesible en http://localhost:3000
+    depends_on:
+      - db-qa
+
+  db-qa:
+    image: postgres:15
+    container_name: db-qa
+    restart: always
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata_qa:/var/lib/postgresql/data
+      - ./db-init:/docker-entrypoint-initdb.d
+
+  backend-prod:
+    build: ./backend
+    container_name: backend-prod
+    environment:
+      - DB_HOST=db-prod
+      - DB_PORT=5432
+      - DB_USER=postgres
+      - DB_PASS=postgres
+      - DB_NAME=postgres
+      - ENVIRONMENT=PROD
+    ports:
+      - "3001:3000" # PROD backend accesible en http://localhost:3001
+    depends_on:
+      - db-prod
+
+  db-prod:
+    image: postgres:15
+    container_name: db-prod
+    restart: always
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=postgres
+    ports:
+      - "5433:5432"
+    volumes:
+      - pgdata_prod:/var/lib/postgresql/data
+      - ./db-init:/docker-entrypoint-initdb.d
+
+volumes:
+  pgdata_qa:
+  pgdata_prod:
