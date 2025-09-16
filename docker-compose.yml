@@ -1,13 +1,20 @@
 version: "3.9"
 
 services:
-  frontend:
+  frontend-qa:
     build: ./frontend
-    container_name: frontend
+    container_name: frontend-qa
     ports:
-      - "8080:80" # Navegador apunta a http://localhost:8080
+      - "8080:80" # Navegador apunta a http://localhost:8080 (QA)
     depends_on:
       - backend-qa
+
+  frontend-prod:
+    build: ./frontend
+    container_name: frontend-prod
+    ports:
+      - "8081:80" # Navegador apunta a http://localhost:8081 (PROD)
+    depends_on:
       - backend-prod
 
   backend-qa:
