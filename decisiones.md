@@ -15,6 +15,8 @@ Acá la idea no es hacer un super diseño, sino algo funcional. Puse HTML + JS p
 ### En resumen
 La idea es tener algo chico pero completo: un login que muestra cómo se conecta todo entre sí. Con eso ya puedo practicar Docker, volúmenes, variables de entorno y levantar QA/PROD sin que sea un quilombo.
 
+<img width="1081" height="909" alt="image" src="https://github.com/user-attachments/assets/7ec9119d-0a62-4d9d-8e24-55f5111aee2a" />
+
 # Decisiones - Etapa 2
 
 ### Dockerfile Backend
