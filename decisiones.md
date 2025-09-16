@@ -44,37 +44,37 @@ La base de datos fue un tema mas complejo ya que antes de largarme a codear prim
 
 Para la justificacion de este paso me voy a disponer a pegar el codigo que documente. en el mismo esta claro la expliacion. 
 
-# Imagen base de Nginx, la elegi porque es simple y tiene muchas funciones ya predeterminadas. 
+ Imagen base de Nginx, la elegi porque es simple y tiene muchas funciones ya predeterminadas. 
 FROM nginx:alpine
 
-# Copiar los archivos estáticos al directorio que Nginx va a usar, agarra la carpeta local frontend , 
-# y la guarda en la carpeta dentro del contenedor. 
+ Copiar los archivos estáticos al directorio que Nginx va a usar, agarra la carpeta local frontend , 
+ y la guarda en la carpeta dentro del contenedor. 
 COPY . /usr/share/nginx/html
 
-# Exponer puerto 80, el contendeor va a utilizar el puerto 80 internamente. 
+Exponer puerto 80, el contendeor va a utilizar el puerto 80 internamente. 
 EXPOSE 80
 
-# Imagen base con Node.js, ya que elegi hacerlo con javascript esxpress y necesita de node.js para correrlo . con la version 18 alcanza
+Imagen base con Node.js, ya que elegi hacerlo con javascript esxpress y necesita de node.js para correrlo . con la version 18 alcanza
 FROM node:18
 
-# Crear carpeta de la app dentro del contenedor, el unico objetivo por la que la cree es para que los comandos que siguen
+ Crear carpeta de la app dentro del contenedor, el unico objetivo por la que la cree es para que los comandos que siguen
 #encuentren todo dentro de la misma carpeta.
 WORKDIR /app
 
-# Copiar package.json y package-lock.json primero, la idea es que en caso que se modifiquen archivos como el server
-# reutilize la capa creada para las dependencias y no vuelva a descargar todo porque detecto que hubo un cambio. 
+ Copiar package.json y package-lock.json primero, la idea es que en caso que se modifiquen archivos como el server
+ reutilize la capa creada para las dependencias y no vuelva a descargar todo porque detecto que hubo un cambio. 
 COPY package*.json ./
 
-# Instalar dependencias, definidas en el copy anterior. sino tendria que hacerlo manual cada vez. 
+ Instalar dependencias, definidas en el copy anterior. sino tendria que hacerlo manual cada vez. 
 RUN npm install
 
-# Copiar el resto del codigo que tengo local en la app que defini antes. 
+ Copiar el resto del codigo que tengo local en la app que defini antes. 
 COPY . .
 
-# Exponer puerto 3000 
+ Exponer puerto 3000 
 EXPOSE 3000
 
-# Comando para que cuando arranco el contendeor automaticamente me levante el server 
+Comando para que cuando arranco el contendeor automaticamente me levante el server 
 CMD ["npm", "start"]
 
 
